@@ -1,9 +1,11 @@
-<!-- CONTENT ENDS HERE -->
-    {{ if hasmath }}
-        {{ insert foot_katex.html }}
-    {{ end }}
-    {{ if hascode }}
-        {{ insert foot_highlight.html }}
-    {{ end }}
-  </body>
+<!-- Content ends here -->
+  </main>
+  {{ insert page_foot.html }}
+  {{ if hasmath }}
+    {{ insert foot_katex.html }}
+  {{ end }}
+  {{ if hascode }}
+    {{ insert foot_highlight.html }}
+  {{ end }}
+</body>
 </html>
