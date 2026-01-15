@@ -53,7 +53,19 @@ with their own environment / deps!</p>
 my_seq = dna&quot;GATTACA&quot;
 
 count(==(DNA_A), my_seq)</code></pre>
-<div class="code-output"><pre><code class="code-result language-plaintext">3</code></pre></div> 
+<div class="code-output"><pre><code class="code-stdout language-plaintext"><span class="sgr32"><span class="sgr1">Precompiling</span></span> packages...
+   1252.4 ms<span class="sgr32">  ✓ </span><span class="sgr90">BioSymbols</span>
+   7405.2 ms<span class="sgr32">  ✓ </span>BioSequences
+  2 dependencies successfully precompiled in 9 seconds. 7 already precompiled.
+  <span class="sgr33">1</span> dependency had output during precompilation:<span class="sgr33">
+┌ </span>BioSymbols<span class="sgr33">
+│  </span>WARNING: Constructor for type &quot;Char&quot; was extended in `BioSymbols` without explicit qualification or import.<span class="sgr33">
+│  </span>  NOTE: Assumed &quot;Char&quot; refers to `Base.Char`. This behavior is deprecated and may differ in future versions.`<span class="sgr33">
+│  </span>  NOTE: This behavior may have differed in Julia versions prior to 1.12.<span class="sgr33">
+│  </span>  Hint: If you intended to create a new generic function of the same name, use `function Char end`.<span class="sgr33">
+│  </span>  Hint: To silence the warning, qualify `Char` as `Base.Char` in the method signature or explicitly `import Base: Char`.<span class="sgr33">
+└  </span>
+</code></pre><pre><code class="code-result language-plaintext">3</code></pre></div> 
   <div class="page-foot">
     <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> kevin. Last modified: .
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
