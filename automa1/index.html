@@ -3,36 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Set theme immediately to prevent flash
+    (function() {
+      const stored = localStorage.getItem('theme');
+      if (stored) {
+        document.documentElement.setAttribute('data-theme', stored);
+      }
+    })();
+  </script>
   
    <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
    
-  <link rel="stylesheet" href="/css/franklin.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link rel="stylesheet" href="/css/celeste.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
 <link rel="shortcut icon" href="/assets/favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
-   <title>Tutorial to Automa: Part 1</title>  
+
+   <title>Tutorial to Automa: Part 1 - BioJulia</title>  
 </head>
 <body>
-  <header>
-<nav class="nav-main">
-  <ul>
-    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
-    <li class="hvr-underline-reveal"><a href="/posts">Posts</a></li>
-    <li class="logo"><a class="hvr-ripple-out" href="/">Bio</a></li>
-    <li class="hvr-underline-reveal"><a href="https://juliahub.com/ui/Packages?q=BioJulia">Packages</a></li>
-    
-    <li class="hvr-underline-reveal"><a href="/join">Join BioJulia</a></li>
-  </ul>
-</nav>
+  <header class="site-header">
+  <div class="header-content">
+    <div class="header-left">
+      <a href="https://biojulia.dev" class="logo-link">
+        <img src="/assets/sticker.svg" alt="BioJulia">
+        <span>BioJulia</span>
+      </a>
+    </div>
+    <nav class="header-nav">
+      <a href="/">Posts</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </nav>
+  </div>
 </header>
 
-
-
+  <main class="franklin-content">
 
 <div class="franklin-content" >
   <h1 id="tutorial_to_automa_part_1" ><a href="#tutorial_to_automa_part_1"> Tutorial to Automa: Part 1</a></h1><p><strong>Find this notebook at <a href="https://github.com/jakobnissen//assets/posts/automa1/automa_tutorial">https://github.com/jakobnissen//assets/posts/automa1/automa_tutorial</a></strong></p>
@@ -653,18 +679,53 @@ end;</code></pre>
 Stacktrace:
 </code></pre></div><p>Okay, we're at slightly above 600 MB/s. Profiling confirms nearly all time is spent encoding the DNA sequences to <code>LongSequence</code>. We can make it faster still by not storing the data as a <code>LongSequence</code>, and instead make it a "lazy" object that only constructs the sequence upon demand. Even further, we could avoid heap-allocating each sequence individually. But these optimizations do not pertain directly to Automa, and I will leave them here.</p>
 
-  <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Jakob Nybo Nissen. Last modified: .
-    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
-</div>
+  <footer class="page-foot">
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Jakob Nybo Nissen
+   · Last modified: 
+  <br>
+  Built with <a href="https://github.com/tlienart/Xranklin.jl">Xranklin.jl</a>
+</footer>
 
 </div>
 
-    
-    
-        <script src="/libs/highlight/highlight.min.js"></script>
+  </main>
+  
+  
+    <script src="/libs/highlight/highlight.min.js"></script>
 <script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
 
-    
-  </body>
+  
+  <script>
+    // Theme toggle functionality
+    (function() {
+      const toggle = document.getElementById('theme-toggle');
+      if (!toggle) return;
+
+      function getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      function getCurrentTheme() {
+        const stored = localStorage.getItem('theme');
+        if (stored) return stored;
+        return getSystemTheme();
+      }
+
+      toggle.addEventListener('click', function() {
+        const current = getCurrentTheme();
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+
+      // Listen for system theme changes
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        if (!localStorage.getItem('theme')) {
+          // Only update if user hasn't manually set a preference
+          document.documentElement.removeAttribute('data-theme');
+        }
+      });
+    })();
+  </script>
+</body>
 </html>

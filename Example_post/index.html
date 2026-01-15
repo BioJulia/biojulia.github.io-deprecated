@@ -13,7 +13,8 @@
     })();
   </script>
   
-  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
   <link rel="stylesheet" href="/css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +25,7 @@
 <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
 
-   <title>Posts - BioJulia</title>  
+   <title>Hello from JuliaCon 2023! - BioJulia</title>  
 </head>
 <body>
   <header class="site-header">
@@ -60,16 +61,41 @@
   <main class="franklin-content">
 
 <div class="franklin-content" >
-  <h1 id="posts" ><a href="#posts"> Posts</a></h1><article class="post-preview"><h2><a href="/cajun-kevin">BioJulia at CAJUN</a></h2><p class="description">Slides and info about Kevin&#39;s presentation
-at the Cambridge Area Julia Users Network
-</p><p class="post-meta">Kevin Bonham · Apr 21, 2024 · 1 min read</p></article>
-<article class="post-preview"><h2><a href="/Example_post">Hello from JuliaCon 2023&#33;</a></h2><p class="post-meta">kevin · Jul 29, 2023 · 1 min read</p></article>
-<article class="post-preview"><h2><a href="/hardware">What scientists must know about hardware to write fast code</a></h2><p class="post-meta">Jakob Nybo Nissen · Sep 4, 2022 · 1 min read</p></article>
-<article class="post-preview"><h2><a href="/automa1">Tutorial to Automa: Part 1</a></h2><p class="post-meta">Jakob Nybo Nissen · Aug 30, 2020 · 17 min read</p></article>
-<article class="post-preview"><h2><a href="/biojl">Bio.jl is old and deprecated</a></h2><p class="post-meta">sabrina · Jan 23, 2020 · 2 min read</p></article>
-<article class="post-preview"><h2><a href="/seq-lang">On the performance and design of BioSequences compared to the Seq language</a></h2><p class="post-meta">Jakob Nybo Nissen, Sabrina Ward · Jan 23, 2020 · 14 min read</p></article>
+  <h1 id="hello_from_juliacon_2023!" ><a href="#hello_from_juliacon_2023!"> Hello from JuliaCon 2023!</a></h1><p>This is an example post for the new website.</p>
+<pre><code class="julia-repl"><span class="sgr32"><span class="sgr1">julia&gt;</span></span> println(&quot;This is REPL code!&quot;)
+This is REPL code!
+</code></pre>
+<pre><code class="julia">foo = &quot;This is a regular code block&quot;
+bar = &quot;Variables get saved&quot;
+@show foo bar</code></pre>
+<div class="code-output"><pre><code class="code-stdout language-plaintext">foo = &quot;This is a regular code block&quot;
+bar = &quot;Variables get saved&quot;
+</code></pre></div><pre><code class="julia">println(foo)</code></pre>
+<div class="code-output"><pre><code class="code-stdout language-plaintext">This is a regular code block
+</code></pre></div><p>We can even include Literate.jl notebooks
+with their own environment / deps!</p>
+<pre><code class="julia">using BioSequences
+
+my_seq = dna&quot;GATTACA&quot;
+
+count(==(DNA_A), my_seq)</code></pre>
+<div class="code-output"><pre><code class="code-stdout language-plaintext"><span class="sgr32"><span class="sgr1">Precompiling</span></span> packages...
+    405.9 ms<span class="sgr33">  ✓ </span><span class="sgr90">PrecompileTools</span>
+   1067.8 ms<span class="sgr32">  ✓ </span><span class="sgr90">BioSymbols</span>
+   6266.2 ms<span class="sgr32">  ✓ </span>BioSequences
+  3 dependencies successfully precompiled in 8 seconds. 6 already precompiled.
+  <span class="sgr33">1</span> dependency precompiled but <span class="sgr33">a different version is currently loaded</span>. Restart julia to access the new version. Otherwise, loading dependents of this package may trigger further precompilation to work with the unexpected version.
+  <span class="sgr33">1</span> dependency had output during precompilation:<span class="sgr33">
+┌ </span>BioSymbols<span class="sgr33">
+│  </span>WARNING: Constructor for type &quot;Char&quot; was extended in `BioSymbols` without explicit qualification or import.<span class="sgr33">
+│  </span>  NOTE: Assumed &quot;Char&quot; refers to `Base.Char`. This behavior is deprecated and may differ in future versions.`<span class="sgr33">
+│  </span>  NOTE: This behavior may have differed in Julia versions prior to 1.12.<span class="sgr33">
+│  </span>  Hint: If you intended to create a new generic function of the same name, use `function Char end`.<span class="sgr33">
+│  </span>  Hint: To silence the warning, qualify `Char` as `Base.Char` in the method signature or explicitly `import Base: Char`.<span class="sgr33">
+└  </span>
+</code></pre><pre><code class="code-result language-plaintext">3</code></pre></div> 
   <footer class="page-foot">
-  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> BioJulia Developers
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> kevin
    · Last modified: 
   <br>
   Built with <a href="https://github.com/tlienart/Xranklin.jl">Xranklin.jl</a>
@@ -79,6 +105,10 @@ at the Cambridge Area Julia Users Network
 
   </main>
   
+  
+    <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
   
   <script>
     // Theme toggle functionality
