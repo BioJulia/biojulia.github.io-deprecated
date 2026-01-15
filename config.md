@@ -4,7 +4,7 @@ Add here global page variables to use throughout your website.
 +++
 author = "BioJulia Developers"
 mintoclevel = 2
-
+base_url_prefix = "posts"
 
 ignore = ["node_modules/", "CLAUDE.md"]
 
