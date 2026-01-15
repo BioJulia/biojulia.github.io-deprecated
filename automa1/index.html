@@ -13,16 +13,16 @@
     })();
   </script>
   
-   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   <link rel="stylesheet" href="/posts/libs/highlight/styles/github.min.css">
    
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/posts/css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
-<link rel="shortcut icon" href="/assets/favicon.ico">
-<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/posts/assets/favicon.png">
+<link rel="shortcut icon" href="/posts/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/posts/assets/apple-touch-icon.png">
 
 
    <title>Tutorial to Automa: Part 1 - BioJulia</title>  
@@ -32,12 +32,12 @@
   <div class="header-content">
     <div class="header-left">
       <a href="https://biojulia.dev" class="logo-link">
-        <img src="/assets/sticker.svg" alt="BioJulia">
+        <img src="/posts/assets/sticker.svg" alt="BioJulia">
         <span>BioJulia</span>
       </a>
     </div>
     <nav class="header-nav">
-      <a href="/">Posts</a>
+      <a href="/posts/">Posts</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
         <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="5"></circle>
@@ -114,7 +114,7 @@ function display_machine()
     end
 end;</code></pre>
 <pre><code class="julia">display_machine()</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_2_0.svg" alt="svg"><p>After the beginning of the file, we expect to see a header. Next, we move to the sequence. From there, we can either reach the end of the file, or loop back to another header. Alternatively, in the case of an empty file, we may move from the beginning of the file to the end immediately without any headers or sequences. We consider an empty file to also be specification-compliant.</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_2_0.svg" alt="svg"><p>After the beginning of the file, we expect to see a header. Next, we move to the sequence. From there, we can either reach the end of the file, or loop back to another header. Alternatively, in the case of an empty file, we may move from the beginning of the file to the end immediately without any headers or sequences. We consider an empty file to also be specification-compliant.</p>
 <p>Note that this simple flowchart describes any <em>valid</em> SimpleFasta format. But if, for example, a file had two consecutive header lines, there is no path we can take through the flowchart from “begin” to “end” which describes the file, and we can tell that the input did not conform to the format.</p>
 <p>The circles marked “begin”, “header”, “sequence” or “end” are what we call the four <em>states</em>. Because the parser shown in the diagram has a fixed list of possible states that it changes between, we call the parser a <em>finite state machine</em> (FSM), or <em>finite state automaton</em> (FSA).</p>
 <p>The flowchart above doesn't do a very good job of describing the FSM that our parser is, because it doesn't tell you <em>how</em> the machine transitions between states. The state <em>transitions</em> are what actually defines the format. For example, we know we are transitioning to a header when we see a <code>&gt;</code> symbol - that is, in a way, what <em>defines</em> the header state.</p>
@@ -136,7 +136,7 @@ begin -&gt; end;
 &rbrace;
 &quot;&quot;&quot;
 display_machine()</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_4_0.svg" alt="svg"><p>How does the machine know when it's supposed to transition between states? Suppose a machine is at the beginning of a file and it begins by observing the input <code>&gt;</code>. Is this part of a transition to the header state, or the beginning of a malformed input?</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_4_0.svg" alt="svg"><p>How does the machine know when it's supposed to transition between states? Suppose a machine is at the beginning of a file and it begins by observing the input <code>&gt;</code>. Is this part of a transition to the header state, or the beginning of a malformed input?</p>
 <p>It is certainly possible for the machine to have a <em>memory</em> of the pattern, such that it only transitions to the “header” state once it sees the two specific inputs <code>&gt;</code> and <code>[a-z]</code> in that order. However, we can make things much simpler by requiring the machine to make a state transition for <em>every single input byte</em>, then we don't need any memory other than what state the machine is in, which is a single integer. To still represent the same format at the flowchart above, we need to insert some extra states:</p>
 <pre><code class="julia">s = &quot;&quot;&quot;digraph &lbrace;
   graph [ rankdir = LR ];
@@ -162,7 +162,7 @@ end [ shape = circle ];
 &rbrace;
 &quot;&quot;&quot;
 display_machine()</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_6_0.svg" alt="svg"><p>The diagram above is exactly equivalent to the previous one, but this diagram makes a state transition for <em>every single</em> input byte. All bytes cause a transition, and no transition consumes multiple bytes. For simplicity, Automa's parsers work like that.</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_6_0.svg" alt="svg"><p>The diagram above is exactly equivalent to the previous one, but this diagram makes a state transition for <em>every single</em> input byte. All bytes cause a transition, and no transition consumes multiple bytes. For simplicity, Automa's parsers work like that.</p>
 <p>Note that it is always possible, given a FSM with multi-byte transitions to convert it to a FSM with single-byte transitions by just putting in more nodes. E.g. the transition from header to sequence requires two bytes, a newline and an A, C, G or T. Therefore, an intermediate note (on the illustration marked “2”) is needed. Unfortunately, the requirement of single-byte transitions limits what you can do with Automa - I'll come back to the limitations later.</p>
 <p>Now let's create this same FSM using Automa.</p>
 <h2 id="introducing_automa" ><a href="#introducing_automa"> Introducing Automa</a></h2><pre><code class="julia"># First imports
@@ -221,7 +221,7 @@ end;</code></pre>
     end
 end;</code></pre>
 <pre><code class="julia">display_machine(machine)</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_13_0.svg" alt="svg"><p>Yes, that looks correct! The start node here is the small point on the left. You can see one of the states are represented by a double circle. This represents an <em>accept state</em>, where the machine may stop at a valid end of input - here after each SimpleFasta record. If the machine stops at any other state, it did not complete correctly. In other words, state “1” here doubles as the “end” state.</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_13_0.svg" alt="svg"><p>Yes, that looks correct! The start node here is the small point on the left. You can see one of the states are represented by a double circle. This represents an <em>accept state</em>, where the machine may stop at a valid end of input - here after each SimpleFasta record. If the machine stops at any other state, it did not complete correctly. In other words, state “1” here doubles as the “end” state.</p>
 <p>With this parser we can read a SimpleFasta file and determine if it conforms to the specification. In Automa, we do this by having our machine create Julia code in the form of a Julia expression (of type <code>Expr</code>), which we can then use to create a function using metaprogramming.</p>
 <p>First, we need an <code>Automa.CodeGenContext</code>, an object which contains the options for code generation. For now, we don't worry about the settings and just make a default context object:</p>
 <pre><code class="julia">context = Automa.CodeGenContext();</code></pre>
@@ -310,7 +310,7 @@ end;</code></pre>
 <p>If we visualize the machine now, the actions will be printed on the relevant edges in the FSM diagram. For example, the newline after a header is labeled <code>'\n'/exit_header</code>, meaning the transition will happen at the input byte <code>'\n'</code>, and it will execute the action <code>exit_header</code>.</p>
 <p>Also note that the diagram structure itself changed, because the entering state and exit state are now distinct. The exit state 6 will execute <code>:exit_record</code> at the end of file (EOF), whereas if the FSM ends at state 1, <code>:exit_record</code> is not executed.</p>
 <pre><code class="julia">display_machine(machine)</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_25_0.svg" alt="svg"><p>Let's also define a simple data structure to parse the SimpleFasta records into. Like our SimpleFasta format, let's not overcomplicate things:</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_25_0.svg" alt="svg"><p>Let's also define a simple data structure to parse the SimpleFasta records into. Like our SimpleFasta format, let's not overcomplicate things:</p>
 <pre><code class="julia">using BioSequences</code></pre>
 <pre><code class="julia">struct FastaRecord&lbrace;A&rbrace;
     header::String
@@ -378,7 +378,7 @@ end;</code></pre>
 end;</code></pre>
 <p>The machine now has a subtle change with a small loop between node 5 and 6 representing the parser seeing multiple sequence lines.</p>
 <pre><code class="julia">display_machine(machine)</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_37_0.svg" alt="svg"><p>We also need to update the <code>actions</code>. Here, I use <code>:(this syntax)</code>, which is equivalent to</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_37_0.svg" alt="svg"><p>We also need to update the <code>actions</code>. Here, I use <code>:(this syntax)</code>, which is equivalent to</p>
 <pre><code class="julia">quote
     this syntax
 end</code></pre>
@@ -452,7 +452,7 @@ n), but not whitespace inside headers</li>
 end;</code></pre>
 <p>The machine is now a bit more complicated. But who cares, it's automatically generated. Look how easy it was to generate!</p>
 <pre><code class="julia">display_machine(machine)</code></pre>
-<img src="/assets/posts/automa1/automa_tutorial_47_0.svg" alt="svg"><h2 id="pitfall_1_ambiguous_parsers" ><a href="#pitfall_1_ambiguous_parsers"> Pitfall 1: Ambiguous parsers</a></h2><p>Besides its complexity, building parsers with Automa has some pitfalls - notably those caused by Automa transitioning state for every input byte.</p>
+<img src="/posts/assets/posts/automa1/automa_tutorial_47_0.svg" alt="svg"><h2 id="pitfall_1_ambiguous_parsers" ><a href="#pitfall_1_ambiguous_parsers"> Pitfall 1: Ambiguous parsers</a></h2><p>Besides its complexity, building parsers with Automa has some pitfalls - notably those caused by Automa transitioning state for every input byte.</p>
 <p>Unfortunately, it's very easy to accidentally create a machine that can't possibly figure out what action to take when looking only at one byte at a time. The following simple machine will not compile (on the master branch of Automa).</p>
 <pre><code class="julia">bad_machine = let
     left = re&quot;Turn left!&quot;
@@ -691,7 +691,7 @@ Stacktrace:
   </main>
   
   
-    <script src="/libs/highlight/highlight.min.js"></script>
+    <script src="/posts/libs/highlight/highlight.min.js"></script>
 <script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
 
   
