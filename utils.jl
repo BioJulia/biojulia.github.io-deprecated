@@ -49,20 +49,42 @@ end
 # ===============================================
 
 function hfun_list_posts(t::String)
-    return string(
-        node("ul",
-                (
-                    node("li",
-                        node("span", class="date", Dates.format(p.date, "U d, yyyy")),
-                        node("a", class="title", href=p.href, " $(p.title)")
-                    )
-                    for p in get_posts(t)
-                )...
+    posts = get_posts(t)
+    parts = String[]
+    for p in posts
+        push!(parts, string(
+            node("article", class="post-preview",
+                node("h2", node("a", href=p.href, p.title)),
+                isempty(p.description) ? "" : node("p", class="description", p.description),
+                node("p", class="post-meta",
+                    p.author,
+                    " · ",
+                    Dates.format(p.date, "u d, yyyy"),
+                    " · ",
+                    "$(p.read_time) min read"
+                )
             )
-        )
+        ))
+    end
+    return join(parts, "\n")
 end
 hfun_list_posts() = hfun_list_posts("")
 
+function estimate_read_time(filepath::String)
+    content = read(filepath, String)
+    # Remove frontmatter
+    m = match(r"^\+\+\+.*?\+\+\+"s, content)
+    if m !== nothing
+        content = content[length(m.match)+1:end]
+    end
+    # Remove code blocks and HTML for word count
+    content = replace(content, r"```.*?```"s => "")
+    content = replace(content, r"~~~.*?~~~"s => "")
+    content = replace(content, r"<[^>]+>" => "")
+    words = length(split(content))
+    # Assume 200 words per minute reading speed
+    return max(1, round(Int, words / 200))
+end
 
 function get_posts(t::String, basepath::String="./")
     # find all valid "posts/xxx.md" files, exclude the index which is where
@@ -76,11 +98,16 @@ function get_posts(t::String, basepath::String="./")
     # to be there
     posts = [
         let rp_clean = String(lstrip(rp, ['.', '/']))
+            rss_desc = getvarfrom(:rss_descr, rp_clean)
+            desc = (rss_desc !== nothing && rss_desc isa String) ? rss_desc : ""
             (;
                 date  = getvarfrom(:date, rp_clean),
                 title = getvarfrom(:title, rp_clean),
+                author = something(getvarfrom(:author, rp_clean), ""),
+                description = desc,
                 href  = "/$(splitext(rp_clean)[1])",
-                tags  = get_page_tags(rp_clean)
+                tags  = get_page_tags(rp_clean),
+                read_time = estimate_read_time(rp_clean)
             )
         end
         for rp in paths

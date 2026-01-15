@@ -3,6 +3,12 @@ using Dates
 date = Date("2024-04-21")
 title = "BioJulia at CAJUN"
 author = "Kevin Bonham"
+rss_descr = """
+Slides and info about Kevin's presentation
+at the Cambridge Area Julia Users Network
+"""
+rss_title = title
+rss_pubdate = date
 +++
 
 # BioJulia at Cajun
