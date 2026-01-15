@@ -64,7 +64,7 @@
 at the Cambridge Area Julia Users Network
 </p><p class="post-meta">Kevin Bonham · Apr 21, 2024 · 1 min read</p></article>
 <article class="post-preview"><h2><a href="/posts/Example_post">Hello from JuliaCon 2023&#33;</a></h2><p class="post-meta">kevin · Jul 29, 2023 · 1 min read</p></article>
-<article class="post-preview"><h2><a href="/posts/hardware">What scientists must know about hardware to write fast code</a></h2><p class="post-meta">Jakob Nybo Nissen · Sep 4, 2022 · 1 min read</p></article>
+<article class="post-preview"><h2><a href="/posts/hardware">What scientists must know about hardware to write fast code</a></h2><p class="description">A guide to understanding CPU architecture, memory hierarchy, and performance optimization for scientific computing.</p><p class="post-meta">Jakob Nybo Nissen · Sep 4, 2022 · 1 min read</p></article>
 <article class="post-preview"><h2><a href="/posts/automa1">Tutorial to Automa: Part 1</a></h2><p class="post-meta">Jakob Nybo Nissen · Aug 30, 2020 · 17 min read</p></article>
 <article class="post-preview"><h2><a href="/posts/biojl">Bio.jl is old and deprecated</a></h2><p class="post-meta">sabrina · Jan 23, 2020 · 2 min read</p></article>
 <article class="post-preview"><h2><a href="/posts/seq-lang">On the performance and design of BioSequences compared to the Seq language</a></h2><p class="post-meta">Jakob Nybo Nissen, Sabrina Ward · Jan 23, 2020 · 14 min read</p></article>
@@ -96,11 +96,21 @@ at the Cambridge Area Julia Users Network
         return getSystemTheme();
       }
 
+      function updateHighlightTheme(isDark) {
+        const lightStyle = document.getElementById('hljs-light');
+        const darkStyle = document.getElementById('hljs-dark');
+        if (lightStyle && darkStyle) {
+          lightStyle.disabled = isDark;
+          darkStyle.disabled = !isDark;
+        }
+      }
+
       toggle.addEventListener('click', function() {
         const current = getCurrentTheme();
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+        updateHighlightTheme(next === 'dark');
       });
 
       // Listen for system theme changes
@@ -108,6 +118,7 @@ at the Cambridge Area Julia Users Network
         if (!localStorage.getItem('theme')) {
           // Only update if user hasn't manually set a preference
           document.documentElement.removeAttribute('data-theme');
+          updateHighlightTheme(e.matches);
         }
       });
     })();

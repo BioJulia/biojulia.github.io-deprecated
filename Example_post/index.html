@@ -13,7 +13,18 @@
     })();
   </script>
   
-   <link rel="stylesheet" href="/posts/libs/highlight/styles/github.min.css">
+   <link rel="stylesheet" href="/posts/libs/highlight/styles/github.min.css" id="hljs-light">
+<link rel="stylesheet" href="/posts/libs/highlight/styles/github-dark.min.css" id="hljs-dark" disabled>
+<script>
+  // Set initial highlight theme based on current theme
+  (function() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') &&
+       window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.getElementById('hljs-light').disabled = isDark;
+    document.getElementById('hljs-dark').disabled = !isDark;
+  })();
+</script>
    
   <link rel="stylesheet" href="/posts/css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,9 +91,9 @@ my_seq = dna&quot;GATTACA&quot;
 
 count(==(DNA_A), my_seq)</code></pre>
 <div class="code-output"><pre><code class="code-stdout language-plaintext"><span class="sgr32"><span class="sgr1">Precompiling</span></span> packages...
-    389.7 ms<span class="sgr33">  ✓ </span><span class="sgr90">PrecompileTools</span>
-   1094.8 ms<span class="sgr32">  ✓ </span><span class="sgr90">BioSymbols</span>
-   6578.6 ms<span class="sgr32">  ✓ </span>BioSequences
+    381.1 ms<span class="sgr33">  ✓ </span><span class="sgr90">PrecompileTools</span>
+   1049.0 ms<span class="sgr32">  ✓ </span><span class="sgr90">BioSymbols</span>
+   6347.1 ms<span class="sgr32">  ✓ </span>BioSequences
   3 dependencies successfully precompiled in 8 seconds. 6 already precompiled.
   <span class="sgr33">1</span> dependency precompiled but <span class="sgr33">a different version is currently loaded</span>. Restart julia to access the new version. Otherwise, loading dependents of this package may trigger further precompilation to work with the unexpected version.
   <span class="sgr33">1</span> dependency had output during precompilation:<span class="sgr33">
@@ -106,8 +117,16 @@ count(==(DNA_A), my_seq)</code></pre>
   </main>
   
   
-    <script src="/posts/libs/highlight/highlight.min.js"></script>
-<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+    <script src="/posts/libs/highlight/julia-custom.min.js"></script>
+<script>
+  // Configure highlight.js to recognize Xranklin's class format
+  document.querySelectorAll('pre code').forEach((el) => {
+    if (el.className && !el.className.startsWith('language-')) {
+      el.classList.add('language-' + el.className.split(' ')[0]);
+    }
+  });
+  hljs.highlightAll();
+</script>
 
   
   <script>
@@ -126,11 +145,21 @@ count(==(DNA_A), my_seq)</code></pre>
         return getSystemTheme();
       }
 
+      function updateHighlightTheme(isDark) {
+        const lightStyle = document.getElementById('hljs-light');
+        const darkStyle = document.getElementById('hljs-dark');
+        if (lightStyle && darkStyle) {
+          lightStyle.disabled = isDark;
+          darkStyle.disabled = !isDark;
+        }
+      }
+
       toggle.addEventListener('click', function() {
         const current = getCurrentTheme();
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+        updateHighlightTheme(next === 'dark');
       });
 
       // Listen for system theme changes
@@ -138,6 +167,7 @@ count(==(DNA_A), my_seq)</code></pre>
         if (!localStorage.getItem('theme')) {
           // Only update if user hasn't manually set a preference
           document.documentElement.removeAttribute('data-theme');
+          updateHighlightTheme(e.matches);
         }
       });
     })();
