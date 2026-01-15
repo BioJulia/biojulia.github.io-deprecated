@@ -64,23 +64,25 @@ end
 hfun_list_posts() = hfun_list_posts("")
 
 
-function get_posts(t::String, basepath::String="posts")
+function get_posts(t::String, basepath::String="./")
     # find all valid "posts/xxx.md" files, exclude the index which is where
     # the post-list gets placed
     paths = String[]
     for (root, dirs, files) in walkdir(basepath)
-        filter!(p -> endswith(p, ".md") && p != "index.md", files)
+        filter!(p -> endswith(p, ".md") && p ∉ ("index.md","404.md","config.md","README.md","CLAUDE.md"), files)
         append!(paths, joinpath.(root, files))
     end
     # for each of those posts, retrieve date and title, both are expected
     # to be there
     posts = [
-        (
-            date  = getvarfrom(:date, rp),
-            title = getvarfrom(:title, rp),
-            href  = "/$(splitext(rp)[1])",
-            tags  = get_page_tags(rp)
-        )
+        let rp_clean = String(lstrip(rp, ['.', '/']))
+            (;
+                date  = getvarfrom(:date, rp_clean),
+                title = getvarfrom(:title, rp_clean),
+                href  = "/$(splitext(rp_clean)[1])",
+                tags  = get_page_tags(rp_clean)
+            )
+        end
         for rp in paths
     ]
     sort!(posts, by = x -> x.date, rev=true)
